@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chamada Escolar QR Code</title>
+  <style>
+    :root {
+      --vermelho-claro: #fbe9e7;
+      --vermelho: #d32f2f;
+      --vermelho-escuro: #b71c1c;
+      --texto-claro: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--vermelho-claro);
+    }
+
+    header {
+      background-color: var(--vermelho-escuro);
+      color: var(--texto-claro);
+      text-align: center;
+      padding: 1.5rem;
+    }
+
+    header img {
+      width: 100px;
+      margin-bottom: 0.5rem;
+    }
+
+    main {
+      max-width: 900px;
+      margin: auto;
+      padding: 2rem;
+    }
+
+    .card {
+      background: var(--texto-claro);
+      border-radius: 10px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      text-align: center;
+      border: 2px solid var(--vermelho);
+    }
+
+    h2 {
+      color: var(--vermelho-escuro);
+    }
+
+    .btn {
+      background-color: var(--vermelho);
+      color: var(--texto-claro);
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 0.5rem auto;
+      font-size: 1rem;
+      display: block;
+      width: 80%;
+      max-width: 300px;
+    }
+
+    .btn:hover {
+      background-color: var(--vermelho-escuro);
+    }
+
+    .login-box {
+      background-color: var(--vermelho-claro);
+      padding: 2rem;
+      border-radius: 10px;
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .aluno-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .aluno-info img {
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border: 4px solid var(--vermelho);
+    }
+
+    .qr-placeholder {
+      width: 140px;
+      height: 140px;
+      background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png') no-repeat center/cover;
+      border: 4px solid var(--vermelho);
+      border-radius: 12px;
+    }
+
+    .filtro-select {
+      margin: 1rem auto;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      max-width: 300px;
+      width: 80%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--vermelho);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="assets/senai-logo.png" alt="SENAI Logo">
+    <h1>Chamada Escolar QR Code</h1>
+  </header>
+  <main>
+    <div class="card" id="login-opcoes">
+      <h2>Escolha o tipo de login</h2>
+      <button class="btn" onclick="mostrarEtapa('login-aluno')">Login Aluno</button>
+      <button class="btn" onclick="mostrarEtapa('login-admin')">Login Administrador</button>
+    </div>
+
+    <div class="card" id="login-aluno" style="display:none;">
+      <h2>Login Educacional</h2>
+      <div class="login-box">
+        <input type="email" placeholder="Email">
+        <input type="password" placeholder="Senha">
+        <button class="btn" onclick="mostrarEtapa('menu-aluno')">Entrar</button>
+        <button class="btn" onclick="mostrarEtapa('login-opcoes')">Voltar</button>
+      </div>
+    </div>
+
+    <div class="card" id="login-admin" style="display:none;">
+      <h2>Login Administrativo</h2>
+      <div class="login-box">
+        <input type="email" placeholder="Email">
+        <input type="password" placeholder="Senha">
+        <button class="btn" onclick="mostrarEtapa('painel-admin')">Entrar</button>
+        <button class="btn" onclick="mostrarEtapa('login-opcoes')">Voltar</button>
+      </div>
+    </div>
+
+    <div class="card" id="menu-aluno" style="display:none;">
+      <h2>Informações do Aluno</h2>
+      <div class="aluno-info">
+        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Foto do Aluno">
+        <p><strong>Nome:</strong> Lucas Rosalem</p>
+        <p><strong>Curso:</strong> Técnico em Desenvolvimento de Sistemas</p>
+        <div class="qr-placeholder"></div>
+      </div>
+      <button class="btn" onclick="mostrarEtapa('painel-aluno')">Visualizar Salas</button>
+      <button class="btn" onclick="mostrarEtapa('login-opcoes')">Sair</button>
+    </div>
+
+    <div class="card" id="painel-admin" style="display:none;">
+      <h2>Painel Administrativo - Visualizar Salas</h2>
+      <select class="filtro-select" onchange="filtrarSalas(this.value, 'lista-salas-admin')">
+        <option value="todos">Todos os cursos</option>
+        <option value="desenvolvimento">Desenvolvimento de Sistemas</option>
+        <option value="eletroeletronica">Eletroeletrônica</option>
+      </select>
+      <div id="lista-salas-admin"></div>
+      <button class="btn" onclick="mostrarEtapa('login-opcoes')">Sair</button>
+    </div>
+
+    <div class="card" id="painel-aluno" style="display:none;">
+      <h2>Visualizar Salas</h2>
+      <select class="filtro-select" onchange="filtrarSalas(this.value, 'lista-salas-aluno')">
+        <option value="todos">Todos os cursos</option>
+        <option value="desenvolvimento">Desenvolvimento de Sistemas</option>
+        <option value="eletroeletronica">Eletroeletrônica</option>
+      </select>
+      <div id="lista-salas-aluno"></div>
+      <button class="btn" onclick="mostrarEtapa('menu-aluno')">Voltar</button>
+    </div>
+  </main>
+
+  <script>
+    function mostrarEtapa(etapa) {
+      document.querySelectorAll('.card').forEach(c => c.style.display = 'none');
+      document.getElementById(etapa).style.display = 'block';
+    }
+
+    const salas = [
+      { nome: 'Sala 1 - Desenvolvimento', curso: 'desenvolvimento', alunos: [
+        { nome: 'Lucas R.', presenca: 'Presente' },
+        { nome: 'Maria C.', presenca: 'Ausente' }
+      ]},
+      { nome: 'Sala 2 - Eletroeletrônica', curso: 'eletroeletronica', alunos: [
+        { nome: 'João M.', presenca: 'Presente' },
+        { nome: 'Ana B.', presenca: 'Presente' }
+      ]},
+      { nome: 'Sala 3 - Desenvolvimento', curso: 'desenvolvimento', alunos: [
+        { nome: 'Carlos A.', presenca: 'Ausente' },
+        { nome: 'Bruna D.', presenca: 'Presente' }
+      ]}
+    ];
+
+    function filtrarSalas(curso, destinoId) {
+      const container = document.getElementById(destinoId);
+      container.innerHTML = '';
+      salas.filter(s => curso === 'todos' || s.curso === curso)
+        .forEach(sala => {
+          const div = document.createElement('div');
+          div.innerHTML = `
+            <h3>${sala.nome}</h3>
+            <table>
+              <thead>
+                <tr><th>Aluno</th><th>Presença</th></tr>
+              </thead>
+              <tbody>
+                ${sala.alunos.map(a => `<tr><td>${a.nome}</td><td>${a.presenca}</td></tr>`).join('')}
+              </tbody>
+            </table>
+          `;
+          container.appendChild(div);
+        });
+    }
+  </script>
+</body>
+</html>
